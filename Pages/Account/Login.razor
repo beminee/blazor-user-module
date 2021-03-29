@@ -1,6 +1,8 @@
 ﻿@page "/account/login"
+@using LoginRegister.Enums
 @inject IAccountService AccountService
 @inject IAlertService AlertService
+@inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
 <style>
@@ -25,13 +27,14 @@
                 <ValidationMessage For="@(() => model.Password)" />
             </div>
             <button disabled="@loading" class="btn btn-primary">
-                @if (loading) 
+                @if (loading)
                 {
                     <span class="spinner-border spinner-border-sm mr-1"></span>
                 }
                 Login
             </button>
             <NavLink href="account/register" class="btn btn-link">Register</NavLink>
+            <button disabled="@loading" class="btn btn-link" @onclick="CreateDefaultAccounts">Create Default Accounts</button>
         </EditForm>
     </div>
 </div>
@@ -40,9 +43,73 @@
     private Models.Account.Login model = new Models.Account.Login();
     private bool loading;
 
+    private async void CreateDefaultAccounts()
+    {
+        // reset alerts on run
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            // Model setup
+            var admin = new AddUser()
+            {
+                FirstName = "Admin",
+                LastName = "Account",
+                Password = "admin123",
+                Rank = UserRanks.Admin,
+                Username = "admin"
+            };
+            var user = new AddUser()
+            {
+                FirstName = "User",
+                LastName = "Account",
+                Password = "user123",
+                Rank = UserRanks.User,
+                Username = "user"
+            };
+            var banned = new AddUser()
+            {
+                FirstName = "Banned",
+                LastName = "Account",
+                Password = "banned123",
+                Rank = UserRanks.Banned,
+                Username = "banned"
+            };
+
+            // Get all users
+            var users = await LocalStorage.GetItem<List<UserRecord>>("big-long-key-registration-testing") ?? new List<UserRecord>();
+
+            // Check if account with same name already exist to avoid exceptions.
+            if (users.All(x => x.Username != "admin"))
+            {
+                await AccountService.Register(admin);
+            }
+
+            if (users.All(x => x.Username != "user"))
+            {
+                await AccountService.Register(user);
+            }
+            if (users.All(x => x.Username != "banned"))
+            {
+                await AccountService.Register(banned);
+            }
+
+            AlertService.Success("Default accounts are created. admin/user/banned : admin123/user123/banned123", keepAfterRouteChange: true);
+            NavigationManager.NavigateTo("account/login");
+            loading = false;
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
     private async void OnValidSubmit()
     {
-    // reset alerts on submit
+        // reset alerts on submit
         AlertService.Clear();
 
         loading = true;
