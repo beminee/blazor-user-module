@@ -35,6 +35,18 @@
                 <InputText @bind-Value="model.Password" type="password" class="form-control" />
                 <ValidationMessage For="@(() => model.Password)" />
             </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>User Rank</label>
+                    <InputSelect @bind-Value="model.Rank" class="form-control">
+                        @foreach (var rank in (UserRanks[]) Enum.GetValues(typeof(UserRanks)))
+                        {
+                            <option value="@rank"> @rank.ToString()</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => model.Rank)"/>
+                </div>
+            </div>
             <button disabled="@loading" class="btn btn-primary">
                 @if (loading)
                 {
@@ -59,8 +71,6 @@
         loading = true;
         try
         {
-            // default registered user has `User` rank.
-            model.Rank = UserRanks.Admin;
             await AccountService.Register(model);
             AlertService.Success("Registration successful", keepAfterRouteChange: true);
             NavigationManager.NavigateTo("account/login");
