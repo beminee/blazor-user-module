@@ -60,7 +60,7 @@
         try
         {
             // default registered user has `User` rank.
-            model.Rank = UserRanks.Admin;
+            model.Rank = UserRanks.User;
             await AccountService.Register(model);
             AlertService.Success("Registration successful", keepAfterRouteChange: true);
             NavigationManager.NavigateTo("account/login");
