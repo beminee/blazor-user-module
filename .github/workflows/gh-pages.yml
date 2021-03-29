@@ -5,14 +5,14 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.1.201
+        dotnet-version: 2.1.509
     - name: Publish with dotnet
       run: dotnet publish --configuration Release --output build
     - name: Deploy to Github Pages
