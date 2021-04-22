@@ -96,8 +96,9 @@
             }
             loading = false;
 
-            AlertService.Success("Default accounts are created. admin/user/banned : admin123/user123/banned123", keepAfterRouteChange: true);
-            //NavigationManager.NavigateTo("/");
+            AlertService.Success("Default accounts are created. admin/user/banned : admin123/user123/banned123", keepAfterRouteChange: false);
+            StateHasChanged();
+    //NavigationManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
