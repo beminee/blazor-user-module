@@ -94,10 +94,10 @@
             {
                 await AccountService.Register(banned);
             }
+            loading = false;
 
             AlertService.Success("Default accounts are created. admin/user/banned : admin123/user123/banned123", keepAfterRouteChange: true);
             NavigationManager.NavigateTo("account/login");
-            loading = false;
         }
         catch (Exception ex)
         {
