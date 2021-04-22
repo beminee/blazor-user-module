@@ -26,13 +26,20 @@
                 <InputText @bind-Value="model.Password" type="password" class="form-control" />
                 <ValidationMessage For="@(() => model.Password)" />
             </div>
-            <button disabled="@loading" class="btn btn-primary">
                 @if (loading)
                 {
-                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                    <button disabled="@loading" class="btn btn-primary">
+                         <span class="spinner-border spinner-border-sm mr-1"></span>
+                        Login
+                    </button>
                 }
-                Login
-            </button>
+                else
+                {
+                    <button class="btn btn-primary">
+                        Login
+                    </button>
+                }
+                
             <NavLink href="account/register" class="btn btn-link">Register</NavLink>
             <button disabled="@loading" class="btn btn-link" @onclick="CreateDefaultAccounts">Create Default Accounts</button>
         </EditForm>
@@ -95,16 +102,14 @@
                 await AccountService.Register(banned);
             }
             loading = false;
-
-            AlertService.Success("Default accounts are created. admin/user/banned : admin123/user123/banned123", keepAfterRouteChange: false);
+            AlertService.Success("Default accounts are created. admin/user/banned : admin123/user123/banned123", keepAfterRouteChange: true);
             StateHasChanged();
-    //NavigationManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
             AlertService.Error(ex.Message);
             loading = false;
-            StateHasChanged();
+            //StateHasChanged();
         }
     }
 
